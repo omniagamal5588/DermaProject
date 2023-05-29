@@ -48,7 +48,7 @@ class ResetPasswordSerializer(serializers.Serializer):
   new_password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)
   class Meta:
     model = User
-    fields = ['old_password', 'new_password']
+    fields = ['email','old_password', 'new_password']
 
   # def validate(self, attrs):
   #   old_password = attrs.get('old_password')
