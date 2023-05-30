@@ -43,10 +43,10 @@ def isLogin(request):
   try:
     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
   except jwt.ExpiredSignatureError:
-    raise AuthenticationFailed({"success":False,'message':'Authentication credentials were not provided.'})
+    raise AuthenticationFailed({"success":False,'message':'Token Is Expired.'})
   
   except jwt.exceptions.DecodeError:
-    raise AuthenticationFailed({"success":False,"message":'Invalid token'})
+    raise AuthenticationFailed({"success":False,'message':'Invalid Token.'})
 
 
   user = Pharmacy.objects.filter(id=payload['id']).first()
@@ -80,24 +80,24 @@ class PharmacyRegistrationView(APIView):
    renderer_classes=[PharmacyRenderer]
    def post(self, request, format=None):
     serializer = PharmacyRegistrationSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
+    if serializer.is_valid(raise_exception=False):
         pharmacy = serializer.save()
         return Response({'message':'Registration Of Pharmacy Successfully',"success":True}, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    # print(serializer.errors)
+    return Response({'message':serializer.errors,'success':False}, status=status.HTTP_400_BAD_REQUEST) 
     # raise AuthenticationFailed ({"success":False,'massage':'This Email already Exist'})
 
 #login Pharmacy View
 class PharmacyLoginView(APIView):
   def post(self, request):
     if 'email' not in request.data and 'password' not in request.data:
-      return Response({"success":False,"message": {"email": ["this field is required"], "password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": "email field and password field are required"}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'email' not in request.data:
-      return Response({"success":False,"message": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": "email field is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'password' not in request.data:
-      return Response({"success":False,"message": {"password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": "password field is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     email = request.data['email']
     password = request.data['password']
@@ -134,10 +134,10 @@ class PharmacyLoginView(APIView):
     
     response = Response()
 
-    response.set_cookie(key='jwt', value=token, httponly=True)
+    # response.set_cookie(key='jwt', value=token, httponly=True)
     response.data = {
         'token': token,
-        'login': True
+        'success': True
     }
     return response
 
@@ -153,36 +153,34 @@ class PharmacyProfileView(APIView):
   def put(self, request, format=None):
     user = isSubscribe(request)
     serializer = PharmacyProfileSerializer(user, data=request.data)
-    if serializer.is_valid(raise_exception=True):
+    if serializer.is_valid(raise_exception=False):
         pharmacy = serializer.save()
         return Response({'message':'profile updated Successfully',"success":True}, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+    # print(serializer.errors)
+    return Response({'success':False,'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
 
 
 #changePassword for pharmacy
 class RestPasswordView(APIView):
   renderer_classes = [PharmacyRenderer]
   def post(self, request, format=None):
+    user = isSubscribe(request)
     if 'old_password' not in request.data and 'new_password' not in request.data:
-      return Response({"success":False,"message": {"old_password": ["this field is required"], "new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # elif 'email' not in request.data:
-    #   return Response({"errors": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": " old_password field new_password are  required"}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'old_password' not in request.data:
-      return Response({"success":False,"message": {"old_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": "old_password field is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'new_password' not in request.data:
-      return Response({"success":False,"message": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": "new_password field is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     old_password = request.data['old_password']
-    user = isSubscribe(request)
+    
     new_password = request.data['new_password']
     flag = user.check_password(old_password)
 
     if not flag:
-      return Response({"success":False,"message": {"old_password": ["this field is invalid"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": " old_password  is invalid"}, status=status.HTTP_400_BAD_REQUEST)
     
     user.set_password(new_password)
     user.save()
@@ -193,16 +191,16 @@ class ForgetPasswordView(APIView):
    renderer_classes = [PharmacyRenderer]
    def put(self,request,formt=None):
        if 'email' not in request.data:
-        return Response({"success":False,"message": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":False,"message":  "email  field is required"}, status=status.HTTP_400_BAD_REQUEST)
        
        elif 'new_password' not in request.data:
-        return Response({"success":False,"message": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":False,"message":  "new_password field is required"}, status=status.HTTP_400_BAD_REQUEST)
   
        email = request.data['email']
        new_password = request.data['new_password']
        user = Pharmacy.objects.filter(email=email).first()
        if not user:
-        raise AuthenticationFailed({"success":False,'message':'Pharmacy Account not found!'})
+        return Response({"success":False,'message':'Pharmacy Account not found!'})
        user.set_password(new_password)
        user.save()
        return Response({"success":True, "message": "Password is changed Successfully"}, status=status.HTTP_200_OK)
@@ -293,7 +291,7 @@ class MedicineInfo(APIView):
       try:
          obj=Medicine.objects.get(id=id)
       except Medicine.DoesNotExist:
-         msg={"msg":"Not Found ", "success": False}
+         msg={"message":"Not Found ", "success": False}
          return Response(msg,status=status.HTTP_404_NOT_FOUND)
       serializer =MedicineSerializer(obj,data=request.data)
       if serializer.is_valid():
@@ -302,14 +300,14 @@ class MedicineInfo(APIView):
             return Response({'success':False,"message":"Is Already Exist"},status=status.HTTP_400_BAD_REQUEST)
          serializer.save()
          return Response({"success":True ,"data":serializer.data},status=status.HTTP_205_RESET_CONTENT)
-      return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+      return Response({'success':False,'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
    
 
    def delete(self,request,id):
       user = isSubscribe(request)
       try:
-         obj=Medicine.objects.get(id=id)
-      except Medicine.DoesNotExist:
+         obj=Pharmacy_medicine.objects.get(medicine_id=id,pharmacy_id=user)
+      except Pharmacy_medicine.DoesNotExist:
          msg={"message":"Medicine Not Found", "success":False}
          return Response(msg,status=status.HTTP_404_NOT_FOUND)
       obj.delete()
