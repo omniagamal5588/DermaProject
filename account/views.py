@@ -108,7 +108,7 @@ class UserProfileView(APIView):
   def put(self,request,format=None):
     user=isLogin(request)
     serializer= UserProfileSerializer(user,data=request.data)
-    if serializer.is_valid(raise_exception=True):
+    if serializer.is_valid(raise_exception=False):
         pharmacy = serializer.save()
         return Response({'message':'profile updated Successfully',"success":True}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
