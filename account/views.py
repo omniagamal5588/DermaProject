@@ -24,19 +24,19 @@ def get_tokens_for_user(user):
 def isLogin(request):
   token = request.META.get('HTTP_AUTHORIZATION')
   if not token:
-    raise AuthenticationFailed('Authentication credentials were not provided.')
+    raise AuthenticationFailed({'success':False,'message':'Authentication credentials were not provided.'})
   try:
     payload = jwt.decode(token, 'secret', algorithms=['HS256'])
     
   except jwt.ExpiredSignatureError:
-    raise AuthenticationFailed('Authentication credentials were not provided.')
+    raise AuthenticationFailed({'success':False,'message':'Authentication credentials were not provided.'})
   
   except jwt.exceptions.DecodeError:
-    raise AuthenticationFailed('Invalid token')
+    raise AuthenticationFailed({'success':False,'message':'Invalid token'})
   
   user = User.objects.filter(id=payload['id']).first()
   if not user:
-    raise AuthenticationFailed('User Account not found!')
+    raise AuthenticationFailed({'success':False,'message':'User Account not found!'})
   
   return user
 
@@ -51,7 +51,7 @@ class UserRegistrationView(APIView):
         user = serializer.save()
         return Response({"success":True, 'message':'Registration Successfully'}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
-    return Response({'request name'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"success":False ,"data":'request name'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginView(APIView):
@@ -59,13 +59,13 @@ class UserLoginView(APIView):
     serializer = UserLoginSerializer(data=request.data)
 
     if 'email' not in request.data and 'password' not in request.data:
-      return Response({"errors": {"email": ["this field is required"], "password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"email": ["this field is required"], "password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'email' not in request.data:
-      return Response({"errors": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'password' not in request.data:
-      return Response({"errors": {"password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     email = request.data['email']
     password = request.data['password']
@@ -122,13 +122,13 @@ class RestPasswordView(APIView):
   def post(self, request, format=None):
     # serializer = ResetPasswordSerializer(data=request.data, context={'user':request.user})
     if 'old_password' not in request.data and 'new_password' not in request.data:
-      return Response({"errors": {"old_password": ["this field is required"], "new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"old_password": ["this field is required"], "new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'old_password' not in request.data:
-      return Response({"errors": {"old_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"old_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     elif 'new_password' not in request.data:
-      return Response({"errors": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
     
     old_password = request.data['old_password']
     new_password = request.data['new_password']
@@ -136,7 +136,7 @@ class RestPasswordView(APIView):
     flag = user.check_password(old_password)
 
     if not flag:
-      return Response({"errors": {"old_password": ["this field is invalid"]}}, status=status.HTTP_400_BAD_REQUEST)
+      return Response({"success":False,"message": {"old_password": ["this field is invalid"]}}, status=status.HTTP_400_BAD_REQUEST)
 
     user.set_password(new_password)
     user.save()
@@ -147,16 +147,16 @@ class ForgetPasswordView(APIView):
   renderer_classes=[UserRenderer]
   def put(self,request,formt=None):
        if 'email' not in request.data:
-        return Response({"errors": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":False,"message": {"email": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
        
        elif 'new_password' not in request.data:
-        return Response({"errors": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":False,"message": {"new_password": ["this field is required"]}}, status=status.HTTP_400_BAD_REQUEST)
   
        email = request.data['email']
        new_password = request.data['new_password']
        user = User.objects.filter(email=email).first()
        if not user:
-        raise AuthenticationFailed('User Account not found!')
+        raise AuthenticationFailed({"success":False,"message":'User Account not found!'})
        user.set_password(new_password)
        user.save()
        return Response({"success":True, "message": "Password is changed Successfully"}, status=status.HTTP_200_OK)
