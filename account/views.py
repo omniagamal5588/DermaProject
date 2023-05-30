@@ -112,7 +112,7 @@ class UserProfileView(APIView):
         pharmacy = serializer.save()
         return Response({'message':'profile updated Successfully',"success":True}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
-    return Response({serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
+    return Response({'success':False,'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST) 
    
       
 
