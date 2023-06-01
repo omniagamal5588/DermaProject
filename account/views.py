@@ -47,6 +47,10 @@ class UserRegistrationView(APIView):
   renderer_classes=[UserRenderer]
   def post(self, request, format=None):
     serializer = UserRegistrationSerializer(data=request.data)
+    if 'email' in request.data:
+      ExitUser=User.objects.filter(email=request.data['email']).first()
+      if ExitUser:
+        return Response({"success":False,"message":"User with this email already exist"},status=status.HTTP_400_BAD_REQUEST)
     if serializer.is_valid(raise_exception=False):
         user = serializer.save()
         return Response({"success":True, 'message':'Registration Successfully'}, status=status.HTTP_201_CREATED)
@@ -108,7 +112,7 @@ class UserProfileView(APIView):
   def put(self,request,format=None):
     user=isLogin(request)
     serializer= UserProfileSerializer(user,data=request.data)
-    if serializer.is_valid(raise_exception=False):
+    if serializer.is_valid(raise_exception=True):
         pharmacy = serializer.save()
         return Response({'message':'profile updated Successfully',"success":True}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
