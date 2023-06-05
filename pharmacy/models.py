@@ -59,8 +59,8 @@ class Pharmacy(AbstractBaseUser):
   pharmacy_image=models.ImageField(upload_to='img', null=False ,verbose_name='Pharmacy Image')
 #   is_active = models.BooleanField(default=True)
 #   is_superuser = models.BooleanField(default=False)
-  created_at = models.DateTimeField(auto_now_add=True)
-  updated_at = models.DateTimeField(auto_now=True)
+#   created_at = models.DateTimeField(auto_now_add=True)
+#   updated_at = models.DateTimeField(auto_now=True)
 
   objects = UserManager()
 
