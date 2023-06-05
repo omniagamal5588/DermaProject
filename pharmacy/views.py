@@ -27,7 +27,7 @@ def get_tokens_for_user(user):
 
 def getSubscriotionToken(user, sub_type, startDate, endDate):
   payload = {
-    'id': user.id,
+    'pharmacy_id': user.id,
     'subscription_id':sub_type.id,
     'exp': endDate,
     'iat': startDate,
@@ -49,7 +49,7 @@ def isLogin(request):
     raise AuthenticationFailed({"success":False,'message':'Invalid Token.'})
 
 
-  user = Pharmacy.objects.filter(id=payload['id']).first()
+  user = Pharmacy.objects.filter(id=payload['pharmacy_id']).first()
   if not user:
     raise AuthenticationFailed({"success":False,'message':'User Account not found!'})
   
@@ -67,7 +67,7 @@ def isSubscribe(request):
   except jwt.exceptions.DecodeError:
     raise AuthenticationFailed({"success":False,'message':'Invalid token'})
   
-  user = Pharmacy.objects.filter(id=payload['id']).first()
+  user = Pharmacy.objects.filter(id=payload['pharmacy_id']).first()
   if not user:
     raise AuthenticationFailed({"success":False,'message':'User Account not found!'})
   elif payload['role'] !="subscribe":
