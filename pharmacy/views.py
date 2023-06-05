@@ -243,7 +243,7 @@ class submitSubscriptionView(APIView):
     end=datetime.datetime.utcnow()+datetime.timedelta(days=sub_type.duration) 
     start =datetime.datetime.utcnow()
     Subscription_Pharmacy.objects.create(pharmacy_id=user,subscription_id=sub_type,start_date=start,end_date=end)
-    return JsonResponse({"message":"the subscription done",'subscriptionToken':token,'success':True})
+    return Response({"message":"the subscription done",'subscriptionToken':token,'success':True})
     # return JsonResponse({"error":"the user is not authorized to do it"})    
 
 #Crud Opertaion For Medicine APIView
