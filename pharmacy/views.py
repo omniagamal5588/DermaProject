@@ -115,7 +115,7 @@ class PharmacyLoginView(APIView):
         raise AuthenticationFailed({'success':False,'message':'Incorrect password!'})
     
     payload = {
-          'id': pharmacy.id,
+          'pharmacy_id': pharmacy.id,
           'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
           'iat': datetime.datetime.utcnow(),
           'role': "login"
