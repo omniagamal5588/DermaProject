@@ -57,7 +57,7 @@ class Pharmacy(AbstractBaseUser):
   phone_number=models.CharField(max_length=15, verbose_name='Phone number')
   description=models.CharField(max_length=255,verbose_name='Description')
   pharmacy_image=models.ImageField(upload_to='img', null=False ,verbose_name='Pharmacy Image')
-  is_active = models.BooleanField(default=True)
+#   is_active = models.BooleanField(default=True)
   is_superuser = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
