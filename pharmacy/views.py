@@ -80,12 +80,16 @@ class PharmacyRegistrationView(APIView):
    renderer_classes=[PharmacyRenderer]
    def post(self, request, format=None):
     serializer = PharmacyRegistrationSerializer(data=request.data)
+    if 'email' in request.data:
+      ExitPharmacy=Pharmacy.objects.filter(email=request.data['email']).first()
+      if ExitPharmacy:
+        return Response({"success":False,"message":"Pharmacy with this email already exist"},status=status.HTTP_400_BAD_REQUEST)
     if serializer.is_valid(raise_exception=False):
-        pharmacy = serializer.save()
-        return Response({'message':'Registration Of Pharmacy Successfully',"success":True}, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        return Response({"success":True, 'message':'Registration Successfully'}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
-    return Response({'message':serializer.errors,'success':False}, status=status.HTTP_400_BAD_REQUEST) 
-    # raise AuthenticationFailed ({"success":False,'massage':'This Email already Exist'})
+    return Response({'message':serializer.errors,'success':False}, status=status.HTTP_400_BAD_REQUEST)
+
 
 #login Pharmacy View
 class PharmacyLoginView(APIView):
