@@ -315,8 +315,7 @@ class MedicineInfo(APIView):
         return Response(msg,status=status.HTTP_404_NOT_FOUND)
       obj.delete()
       return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
-     
-   
+    
 #Offers Section
 
 #Crud Opertions for for Offers
