@@ -311,11 +311,12 @@ class MedicineInfo(APIView):
       user = isSubscribe(request)
       try:
          obj=Pharmacy_medicine.objects.get(medicine_id=id,pharmacy_id=user)
+         obj.delete()
+         return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
       except Pharmacy_medicine.DoesNotExist:
          msg={"message":"Medicine Not Found", "success":False}
          return Response(msg,status=status.HTTP_404_NOT_FOUND)
-      obj.delete()
-      return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
+     
    
 #Offers Section
 
