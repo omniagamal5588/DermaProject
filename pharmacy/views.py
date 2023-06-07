@@ -303,7 +303,7 @@ class MedicineInfo(APIView):
         if medicine:
           return Response({'success':False,"message":"Is Already Exist"},status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
-        return Response({"success":True ,"data":serializer.data},status=status.HTTP_205_RESET_CONTENT)
+        return Response({"success":True ,"data":serializer.data,"message":"Medicine updated successfully"},status=status.HTTP_205_RESET_CONTENT)
     return Response({'success':False,'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
   
 
