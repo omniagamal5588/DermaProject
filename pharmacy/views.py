@@ -280,41 +280,41 @@ class MedicineDetailes(APIView):
 #Medicine Section
 #For Get&Put&Patch&Delete On object
 class MedicineInfo(APIView):
-   def get(self,request,id):
-      user = isSubscribe(request)
-      try:
-         obj=Medicine.objects.get(id=id)
-      except Medicine.DoesNotExist:
-         msg={"message":"This Medicine Type Not Found", "success":False} 
-         return Response(msg,status=status.HTTP_404_NOT_FOUND)
-      serializer =MedicineSerializer(obj)
-      return Response({"success":True, "data":serializer.data},status=status.HTTP_200_OK)
-
-   def put(self,request,id):
-      user = isSubscribe(request)
-      try:
-         obj=Medicine.objects.get(id=id)
-      except Medicine.DoesNotExist:
-         msg={"message":"Not Found ", "success": False}
-         return Response(msg,status=status.HTTP_404_NOT_FOUND)
-      serializer =MedicineSerializer(obj,data=request.data)
-      if serializer.is_valid():
-         medicine=Medicine.objects.filter(serial_number=request.data['serial_number']).first()
-         if medicine:
-            return Response({'success':False,"message":"Is Already Exist"},status=status.HTTP_400_BAD_REQUEST)
-         serializer.save()
-         return Response({"success":True ,"data":serializer.data},status=status.HTTP_205_RESET_CONTENT)
-      return Response({'success':False,'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
-   
-
-   def delete(self,request,id):
-      user = isSubscribe(request)
-      obj=Pharmacy_medicine.objects.filter(medicine_id=id,pharmacy_id=user).first()
-      if not obj:
-        msg={"message":"Medicine Not Found", "success":False}
+  def get(self,request,id):
+    user = isSubscribe(request)
+    try:
+        obj=Medicine.objects.get(id=id)
+    except Medicine.DoesNotExist:
+        msg={"message":"This Medicine Type Not Found", "success":False} 
         return Response(msg,status=status.HTTP_404_NOT_FOUND)
-      obj.delete()
-      return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
+    serializer =MedicineSerializer(obj)
+    return Response({"success":True, "data":serializer.data},status=status.HTTP_200_OK)
+
+  def put(self,request,id):
+    user = isSubscribe(request)
+    try:
+        obj=Medicine.objects.get(id=id)
+    except Medicine.DoesNotExist:
+        msg={"message":"Not Found ", "success": False}
+        return Response(msg,status=status.HTTP_404_NOT_FOUND)
+    serializer =MedicineSerializer(obj,data=request.data)
+    if serializer.is_valid():
+        medicine=Medicine.objects.filter(serial_number=request.data['serial_number']).first()
+        if medicine:
+          return Response({'success':False,"message":"Is Already Exist"},status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response({"success":True ,"data":serializer.data},status=status.HTTP_205_RESET_CONTENT)
+    return Response({'success':False,'message':serializer.errors},status=status.HTTP_400_BAD_REQUEST)
+  
+
+  def delete(self,request,id):
+    user = isSubscribe(request)
+    obj=Pharmacy_medicine.objects.filter(medicine_id=id,pharmacy_id=user).first()
+    if not obj:
+      msg={"message":"Medicine Not Found", "success":False}
+      return Response(msg,status=status.HTTP_404_NOT_FOUND)
+    obj.delete()
+    return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
     
 #Offers Section
 
