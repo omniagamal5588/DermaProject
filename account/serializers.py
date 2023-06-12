@@ -9,7 +9,7 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-  # We are writing this becoz we need confirm password field in our Registratin Request
+      # We are writing this becoz we need confirm password field in our Registratin Request
   #new_password = serializers.CharField(style={'input_type':'password'}, write_only=True)
   class Meta:
     model = User
@@ -21,13 +21,31 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 # Validating Password and Confirm Password while Registration
   def validate(self, attrs):
     email = attrs.get('email', None)
-    
+
     if User.objects.filter(email=email).exists():
             raise serializers.ValidationError({'email': ('email')})
     return super().validate(attrs)
   def create(self, validate_data):
     return User.objects.create_user(**validate_data)
-  
+
+class AdminSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields=[ 'email', 'password']
+    extra_kwargs={
+      'password':{'write_only':True}
+    }
+
+# Validating Password and Confirm Password while Registration
+  def validate(self, attrs):
+    email = attrs.get('email', None)
+
+    if User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({'email': ('email')})
+    return super().validate(attrs)
+  def create(self, validate_data):
+    return User.objects.create_superuser(**validate_data)
+
 
 #PharmacyRegisterSerializer
 
@@ -40,7 +58,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
-    fields = ['id', 'email', 'first_name','last_name','phone_number','address']    
+    fields = ['id', 'email', 'first_name','last_name','phone_number','address']
 
 
 class ResetPasswordSerializer(serializers.Serializer):
@@ -49,17 +67,6 @@ class ResetPasswordSerializer(serializers.Serializer):
   class Meta:
     model = User
     fields = ['email','old_password', 'new_password']
-
-  # def validate(self, attrs):
-  #   old_password = attrs.get('old_password')
-  #   new_password = attrs.get('new_password')
-  #   user = self.context.get('user')
-  #   if old_password != new_password:
-  #     raise serializers.ValidationError("Password and Confirm Password doesn't match")
-  #   user.set_password(new_password)
-  #   user.save()
-  #   return attrs
-
 
 
 class SendPasswordResetEmailSerializer(serializers.Serializer):
@@ -88,7 +95,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
       return attrs
     else:
       raise serializers.ValidationError('You are not a Registered User')
-    
+
 class UserPasswordResetSerializer(serializers.Serializer):
   password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)
   new_password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)
@@ -112,4 +119,4 @@ class UserPasswordResetSerializer(serializers.Serializer):
       return attrs
     except DjangoUnicodeDecodeError as identifier:
       PasswordResetTokenGenerator().check_token(user, token)
-      raise serializers.ValidationError('Token is not Valid or Expired')    
+      raise serializers.ValidationError('Token is not Valid or Expired')
