@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -43,10 +44,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_framework_simplejwt',
-     'rest_auth', 
+     'rest_auth',
     'account',
     'pharmacy',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -54,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'whitenoise.middleware.WhiteNoiseMiddleware',
     #'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',  
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -84,43 +85,43 @@ WSGI_APPLICATION = 'project.wsgi.application'
 REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "errors",
     'DEFAULT_AUTHENTICATION_CLASSES': [
-         
-        
+
+
         'rest_framework.authentication.BasicAuthentication',
-        
-        
+
+
     ],
-    
+
     'DEFAULT_PERMISSION_CLASSES': [
-        
+
          'rest_framework.permissions.AllowAny',
     ],
 
     '_DEFAULT_RENDERER_CLASSES' :( 'rest_framework.renderers.JSONRenderer',),
 
-    
+
 }
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+# DATABASES = {
 
-     'default': {
-     'ENGINE': 'django.db.backends.mysql',
-      'NAME': 'railway',
-      'USER': 'root',
-     'PASSWORD': 'hOkOFcuHa5i44boY778t',
-      'HOST':'containers-us-west-184.railway.app',
-      'PORT':'5497',
-  }
+#      'default': {
+#      'ENGINE': 'django.db.backends.mysql',
+#       'NAME': 'railway',
+#       'USER': 'root',
+#      'PASSWORD': 'hOkOFcuHa5i44boY778t',
+#       'HOST':'containers-us-west-184.railway.app',
+#       'PORT':'5497',
+#   }
 
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-}
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     # }
+# }
 
 ''''
 DATABASES = {
@@ -134,6 +135,12 @@ DATABASES = {
 
 '''
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -184,9 +191,9 @@ AUTH_USER_MODEL = 'account.User'
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-   
 
-   
+
+
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
@@ -204,4 +211,13 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:9000",
-] 
+]
+
+# media direction
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+PROFILE_PICTURE_DIR = 'pharmacy_pictures/'
+PROFILE_PICTURE_DIR = 'medicine_pictures/'
+
+
