@@ -90,7 +90,6 @@ class PharmacyRegistrationView(APIView):
     # print(serializer.errors)
     return Response({'message':serializer.errors,'success':False}, status=status.HTTP_400_BAD_REQUEST)
 
-
 #login Pharmacy View
 class PharmacyLoginView(APIView):
   def post(self, request):
@@ -164,7 +163,7 @@ class PharmacyProfileView(APIView):
     return Response({'success':False,'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-#ResetPassword for pharmacy
+#changePassword for pharmacy
 class RestPasswordView(APIView):
   renderer_classes = [PharmacyRenderer]
   def post(self, request, format=None):
@@ -281,7 +280,6 @@ class MedicineDetailes(APIView):
 
       return Response({"success": False, "message" :serializer.errors},status=status.HTTP_400_BAD_REQUEST)
 
-
 #Medicine Section
 #For Get&Put&Patch&Delete On object
 class MedicineInfo(APIView):
@@ -324,10 +322,7 @@ class MedicineInfo(APIView):
     obj.delete()
     return Response({"message":"deleted successfully", "success":True},status=status.HTTP_204_NO_CONTENT)
 
-
-
 #Offers Section
-
 #Crud Opertions for for Offers
 class OffersDetailes(APIView):
    def put(self,request,id):
@@ -344,8 +339,6 @@ class OffersDetailes(APIView):
         return Response({'success':True,'message':'offer is added', "data": serializer.data},status=status.HTTP_201_CREATED)
       return Response({"success": False, "message": serializer.errors} ,status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class SubscriptionPlanView(APIView):
   #createSubscriptionPlan
   def post(self,request,format=None):
@@ -354,4 +347,29 @@ class SubscriptionPlanView(APIView):
     if serializer.is_valid():
       serializer.save()
       return Response({"success":True, "data":serializer.data},status=status.HTTP_201_CREATED)
-    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    return Response({"success": False, "message": serializer.errors} ,status=status.HTTP_400_BAD_REQUEST)
+  #show all subsceription types
+  def get(self,request,format=None):
+    subsceriptionType=Subscription.objects.all()
+    #Retieve all types of subsceription plans
+    serializer=SubscriptionPlanSerializer(subsceriptionType,many=True)
+    return Response({'success':True,"data":serializer.data},status=status.HTTP_200_OK)
+
+#User application show medicines
+
+class MedicineView(APIView):
+    def get(self, request):
+        allMedicines = Medicine.objects.all()
+        serializer = MedicineSerializer(allMedicines, many=True)
+        return Response({'success':True ,'data':serializer.data},status=status.HTTP_200_OK)
+    
+class OfferView(APIView):
+    def get(self, request):
+       
+        allMedicinesOffered = Pharmacy_medicine.objects.exclude(offer=0)
+       
+        serializer = PharmacyMedicineSerializer(allMedicinesOffered, many=True)
+        return Response({'success':True ,'data':serializer.data},status=status.HTTP_200_OK)    
+
+
+    
