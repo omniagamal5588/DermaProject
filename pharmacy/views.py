@@ -150,12 +150,12 @@ class PharmacyProfileView(APIView):
   renderer_classes = [PharmacyRenderer]
   # permission_classes = [IsAuthenticated]
   def get(self, request, format=None):
-    user = isSubscribe(request)
+    user = isLogin(request)
     serializer = PharmacyProfileSerializer(user)
     return Response({"success": True , "data":serializer.data}, status=status.HTTP_200_OK)
 
   def put(self, request, format=None):
-    user = isSubscribe(request)
+    user = isLogin(request)
     serializer = PharmacyProfileSerializer(data=request.data, instance=user)
     if serializer.is_valid(raise_exception=False):
         pharmacy = serializer.save()
@@ -164,11 +164,11 @@ class PharmacyProfileView(APIView):
     return Response({'success':False,'message':serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-#changePassword for pharmacy
+#ResetPassword for pharmacy
 class RestPasswordView(APIView):
   renderer_classes = [PharmacyRenderer]
   def post(self, request, format=None):
-    user = isSubscribe(request)
+    user = isLogin(request)
     if 'old_password' not in request.data and 'new_password' not in request.data:
       return Response({"success":False,"message": " old_password field new_password are  required"}, status=status.HTTP_400_BAD_REQUEST)
 
