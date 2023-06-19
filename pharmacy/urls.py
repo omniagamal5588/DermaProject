@@ -16,7 +16,8 @@ urlpatterns=[
   path('medicines/<int:id>/offers/',OffersDetailes.as_view(),name='offers'),
   path('submitSubscription/',submitSubscriptionView.as_view()),
   path('logout/',LogOutView.as_view(),name='logout'),
-  path('creatSubPlan/',SubscriptionPlanView.as_view(),name='logout'),
-
-
-  ]
+  path('SubscribePlan/',SubscriptionPlanView.as_view(),name='subscertionType'),
+  # path('viewSubPlan/',SubscriptionPlanView.as_view(),name='subscertionType'),
+  path('medicinesUserView/',MedicineView.as_view(),name='medicineView'),
+  path('offersUserView/',OfferView.as_view(),name='offersView')
+]
