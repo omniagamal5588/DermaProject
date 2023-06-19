@@ -359,15 +359,13 @@ class SubscriptionPlanView(APIView):
 
 class MedicineView(APIView):
     def get(self, request):
-        allMedicines = Medicine.objects.all()
-        serializer = MedicineSerializer(allMedicines, many=True)
-        return Response({'success':True ,'data':serializer.data},status=status.HTTP_200_OK)
+        allMedicines = Pharmacy_medicine.objects.filter(offer=0)
+        serializer = PharmacyMedicineSerializer(allMedicines, many=True)
+        return Response({'success':True ,'data':serializer.data},status=status.HTTP_200_OK)   
     
 class OfferView(APIView):
     def get(self, request):
-       
         allMedicinesOffered = Pharmacy_medicine.objects.exclude(offer=0)
-       
         serializer = PharmacyMedicineSerializer(allMedicinesOffered, many=True)
         return Response({'success':True ,'data':serializer.data},status=status.HTTP_200_OK)    
 
