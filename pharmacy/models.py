@@ -28,7 +28,7 @@ class Pharmacy(AbstractBaseUser):
   description=models.CharField(max_length=255,verbose_name='Description')
   pharmacy_image=models.ImageField(upload_to='pharmacy_pictures', null=True ,verbose_name='Pharmacy Image')
   is_active = models.BooleanField(default=True)
-  is_superuser = models.BooleanField(default=False)
+#   is_superuser = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
@@ -62,8 +62,8 @@ class Medicine(models.Model):
   medicine_name=models.CharField(max_length=255)
   medicine_description=models.TextField()
   medicine_price=models.DecimalField(max_digits=6, decimal_places=2)
-  medicine_image=models.ImageField(upload_to='medicine_pictures', null=True ,verbose_name='Medicine Image')
-  pharmacy_id=models.CharField(Pharmacy,max_length=255,default=True)
+  medicine_image=models.ImageField(upload_to='medicine_pictures', null=False ,verbose_name='Medicine Image')
+  
 
 
 class Pharmacy_medicine(models.Model):
