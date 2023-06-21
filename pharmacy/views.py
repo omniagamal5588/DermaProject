@@ -102,7 +102,7 @@ class PharmacyRegistrationView(APIView):
 
     # image_file = request.FILES.get('pharmacy_image')
     if 'pharmacy_image' not in  request.FILES:
-        return Response({"success":Falseو 'message': 'Image file missed'}, status=status.HTTP_201_CREATED)
+        return Response({"success":False, 'message': 'Image file missed'}, status=status.HTTP_201_CREATED)
     image_file = request.FILES.get('pharmacy_image')
      
     if not image_file.content_type.startswith('image'):
