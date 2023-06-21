@@ -83,12 +83,12 @@ class PharmacyRegistrationView(APIView):
     if 'email' in request.data:
       ExitPharmacy=Pharmacy.objects.filter(email=request.data['email']).first()
       if ExitPharmacy:
-        return Response({"success":False,"message":"Pharmacy with this email already exist"},status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success":False,"message":"Pharmacy with this email already exist"},status=status.HTTP_201_CREATED)
     if serializer.is_valid(raise_exception=False):
         user = serializer.save()
         return Response({"success":True, 'message':'Registration Successfully'}, status=status.HTTP_201_CREATED)
     # print(serializer.errors)
-    return Response({'message':serializer.errors,'success':False}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'message':serializer.errors,'success':False}, status=status.HTTP_201_CREATED)
 
 #login Pharmacy View
 class PharmacyLoginView(APIView):
