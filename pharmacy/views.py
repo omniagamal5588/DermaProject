@@ -100,10 +100,11 @@ class PharmacyRegistrationView(APIView):
     if 'description' not in request.data:
       return Response({"success":False,"message":"description is required"},status=status.HTTP_201_CREATED)
 
-    image_file = request.FILES.get('pharmacy_image')
-    if image_file is None:
+    # image_file = request.FILES.get('pharmacy_image')
+    if if 'pharmacy_image' not in  request.FILES:
         return Response({"success":Falseو 'message': 'Image file missed'}, status=status.HTTP_201_CREATED)
-      
+    image_file = request.FILES.get('pharmacy_image')
+     
     if not image_file.content_type.startswith('image'):
         return Response({"success":Falseو 'message': 'File is not an image'}, status=status.HTTP_201_CREATED)
       
