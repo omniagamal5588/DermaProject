@@ -106,7 +106,7 @@ class PharmacyRegistrationView(APIView):
     image_file = request.FILES.get('pharmacy_image')
      
     if not image_file.content_type.startswith('image'):
-        return Response({"success":Falseو 'message': 'File is not an image'}, status=status.HTTP_201_CREATED)
+        return Response({"success":False, 'message': 'File is not an image'}, status=status.HTTP_201_CREATED)
       
     if serializer.is_valid(raise_exception=False):
         user = serializer.save()
