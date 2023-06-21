@@ -84,6 +84,29 @@ class PharmacyRegistrationView(APIView):
       ExitPharmacy=Pharmacy.objects.filter(email=request.data['email']).first()
       if ExitPharmacy:
         return Response({"success":False,"message":"Pharmacy with this email already exist"},status=status.HTTP_201_CREATED)
+        
+    if 'passowrd' not in request.data:
+      return Response({"success":False,"message":"password is required"},status=status.HTTP_201_CREATED)
+      
+    if 'phone_number' not in request.data:
+      return Response({"success":False,"message":"phone_number is required"},status=status.HTTP_201_CREATED)
+      
+    if 'location' not in request.data:
+      return Response({"success":False,"message":"location is required"},status=status.HTTP_201_CREATED)
+      
+    if 'pharmacy_image' not in request.data:
+      return Response({"success":False,"message":"pharmacy_image is required"},status=status.HTTP_201_CREATED)
+      
+    if 'description' not in request.data:
+      return Response({"success":False,"message":"description is required"},status=status.HTTP_201_CREATED)
+
+    image_file = request.FILES.get('pharmacy_image')
+    if image_file is None:
+        return Response({"success":Falseو 'message': 'Image file missed'}, status=status.HTTP_201_CREATED)
+      
+    if not image_file.content_type.startswith('image'):
+        return Response({"success":Falseو 'message': 'File is not an image'}, status=status.HTTP_201_CREATED)
+      
     if serializer.is_valid(raise_exception=False):
         user = serializer.save()
         return Response({"success":True, 'message':'Registration Successfully'}, status=status.HTTP_201_CREATED)
